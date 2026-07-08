@@ -185,11 +185,11 @@ body.filling,body.filling *{cursor:crosshair !important}
       <div class="logo">R</div>
       <div class="txt">RÖCHLING<small>DIMENSIONAL SUITE</small></div>
     </div>
-    <button class="navbtn active" data-view="dashboard"><span class="ic">📊</span>Dashboard</button>
-    <button class="navbtn" data-view="reports"><span class="ic">📋</span>Relatórios</button>
-    <button class="navbtn" data-view="editor"><span class="ic">✏️</span>Editor</button>
-    <button class="navbtn" data-view="import"><span class="ic">📥</span>Importar Excel</button>
-    <button class="navbtn" data-view="settings"><span class="ic">⚙️</span>Configurações</button>
+    <button class="navbtn active" data-view="dashboard"><span class="ic">📊</span><span data-i18n="nav_dashboard">Dashboard</span></button>
+    <button class="navbtn" data-view="reports"><span class="ic">📋</span><span data-i18n="nav_reports">Relatórios</span></button>
+    <button class="navbtn" data-view="editor"><span class="ic">✏️</span><span data-i18n="nav_editor">Editor</span></button>
+    <button class="navbtn" data-view="import"><span class="ic">📥</span><span data-i18n="nav_import">Importar Excel</span></button>
+    <button class="navbtn" data-view="settings"><span class="ic">⚙️</span><span data-i18n="nav_settings">Configurações</span></button>
     <div class="foot">v3.0 · Röchling Automotive<br>© 2026</div>
   </aside>
 
@@ -200,46 +200,52 @@ body.filling,body.filling *{cursor:crosshair !important}
         <div class="sub" id="viewSub">Visão geral dos relatórios dimensionais</div>
       </div>
       <div class="spacer"></div>
+      <select id="langSelect" onchange="applyLanguage(this.value)" title="Language / Idioma / Sprache / Lingua" style="min-width:150px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-size:13px">
+        <option value="pt">🇧🇷 Português</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="de">🇩🇪 Deutsch</option>
+      </select>
       <button class="iconbtn" onclick="toggleTheme()" title="Alternar tema">🌓</button>
-      <button class="btn" onclick="goEditor()">+ Novo relatório</button>
+      <button class="btn" onclick="goEditor()" data-i18n="btn_new_report">+ Novo relatório</button>
     </div>
 
     <div class="content">
       <!-- DASHBOARD -->
       <section class="view active" id="v-dashboard">
         <div class="grid kpis">
-          <div class="card kpi clickable" onclick="kpiGo('')" title="Ver todos os relatórios"><div class="ic">📋</div><h3>Total de relatórios</h3><div class="v" id="kpiTotal">0</div><div class="sub" id="kpiTotalSub">Todos períodos</div></div>
-          <div class="card kpi ok clickable" onclick="kpiGo('ok')" title="Ver relatórios aprovados"><div class="ic">✓</div><h3>Medições OK</h3><div class="v" id="kpiOk">0</div><div class="sub" id="kpiOkPct">0%</div></div>
-          <div class="card kpi nok clickable" onclick="kpiGo('nok')" title="Ver relatórios com reprovações"><div class="ic">✕</div><h3>Medições NOT OK</h3><div class="v" id="kpiNok">0</div><div class="sub" id="kpiNokPct">0%</div></div>
-          <div class="card kpi warn clickable" onclick="kpiGo('')" title="Ver todos os relatórios"><div class="ic">🎯</div><h3>Peças inspecionadas</h3><div class="v" id="kpiParts">0</div><div class="sub">Últimos relatórios</div></div>
-          <div class="card kpi clickable" onclick="go('reports')" title="Ver relatórios por cliente"><div class="ic">🏷️</div><h3>Clientes atendidos</h3><div class="v" id="kpiCustomers">0</div><div class="sub" id="kpiCustomersSub">—</div></div>
+          <div class="card kpi clickable" onclick="kpiGo('')" title="Ver todos os relatórios"><div class="ic">📋</div><h3 data-i18n="kpi_total">Total de relatórios</h3><div class="v" id="kpiTotal">0</div><div class="sub" id="kpiTotalSub">Todos períodos</div></div>
+          <div class="card kpi warn clickable" onclick="kpiGo('')" title="Ver todos os relatórios"><div class="ic">🎯</div><h3 data-i18n="kpi_parts">Peças inspecionadas</h3><div class="v" id="kpiParts">0</div><div class="sub">Últimos relatórios</div></div>
+          <div class="card kpi clickable" onclick="go('reports')" title="Ver relatórios por cliente"><div class="ic">🏷️</div><h3 data-i18n="kpi_customers">Clientes atendidos</h3><div class="v" id="kpiCustomers">0</div><div class="sub" id="kpiCustomersSub">—</div></div>
+          <div class="card kpi clickable" onclick="goTopClient()" title="Ver relatórios do cliente com mais relatórios"><div class="ic">🏢</div><h3 data-i18n="kpi_topclient">Relatórios por Cliente</h3><div class="v" id="kpiTopClient">0</div><div class="sub" id="kpiTopClientSub">—</div></div>
         </div>
 
         <div class="grid charts" style="margin-top:16px">
           <div class="card">
-            <h3>Aprovação por relatório</h3>
+            <h3 data-i18n="chart_bar">Aprovação por relatório</h3>
             <div class="chartbox"><canvas id="chartBar"></canvas></div>
           </div>
           <div class="card">
-            <h3>Status geral</h3>
+            <h3 data-i18n="chart_pie">Status geral</h3>
             <div class="chartbox"><canvas id="chartPie"></canvas></div>
           </div>
         </div>
 
         <div class="grid charts" style="margin-top:16px">
           <div class="card">
-            <h3>Tendência de conformidade</h3>
+            <h3 data-i18n="chart_line">Tendência de conformidade</h3>
             <div class="chartbox"><canvas id="chartLine"></canvas></div>
           </div>
           <div class="card">
-            <h3>Relatórios por Customer</h3>
+            <h3 data-i18n="chart_customer">Relatórios por Customer</h3>
             <div class="chartbox"><canvas id="chartCustomer"></canvas></div>
           </div>
         </div>
 
         <div class="grid" style="margin-top:16px;grid-template-columns:1fr">
           <div class="card">
-            <h3>Últimos relatórios</h3>
+            <h3 data-i18n="recent_reports">Últimos relatórios</h3>
             <div id="recentList" style="display:flex;flex-direction:column;gap:8px"></div>
           </div>
         </div>
@@ -249,14 +255,14 @@ body.filling,body.filling *{cursor:crosshair !important}
       <section class="view" id="v-reports">
         <div class="card">
           <div class="filters">
-            <input type="text" id="searchInp" placeholder="🔍 Buscar por nome, part number, report N°, customer...">
-            <select id="statusFilter"><option value="">Todos os status</option><option value="ok">Apenas aprovados</option><option value="nok">Com reprovações</option></select>
-            <select id="customerFilter"><option value="">Todos os clientes</option></select>
+            <input type="text" id="searchInp" data-i18n-ph="search_ph" placeholder="🔍 Buscar por nome, part number, report N°, customer...">
+            <select id="statusFilter"><option value="" data-i18n="filter_all_status">Todos os status</option><option value="ok" data-i18n="filter_ok">Apenas aprovados</option><option value="nok" data-i18n="filter_nok">Com reprovações</option></select>
+            <select id="customerFilter"><option value="" data-i18n="filter_all_clients">Todos os clientes</option></select>
             <div class="spacer"></div>
-            <button class="btn" onclick="goEditor()">+ Novo</button>
+            <button class="btn" onclick="goEditor()" data-i18n="btn_new">+ Novo</button>
           </div>
           <table class="tbl">
-            <thead><tr><th>Nome</th><th>Part Number</th><th>Customer</th><th>Report N°</th><th>Data</th><th>Itens</th><th>Status</th><th>Ações</th></tr></thead>
+            <thead><tr><th data-i18n="th_name">Nome</th><th data-i18n="th_partnumber">Part Number</th><th data-i18n="th_customer">Customer</th><th data-i18n="th_reportn">Report N°</th><th data-i18n="th_date">Data</th><th data-i18n="th_items">Itens</th><th data-i18n="th_status">Status</th><th data-i18n="th_actions">Ações</th></tr></thead>
             <tbody id="reportsTbody"></tbody>
           </table>
         </div>
@@ -267,15 +273,15 @@ body.filling,body.filling *{cursor:crosshair !important}
         <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap" class="no-print">
           <select id="reportSelect" style="min-width:260px"></select>
           <span id="versionBadge" style="font-size:11px;background:var(--panel-2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--muted)"></span>
-          <button class="btn sm ghost" onclick="openVersionHistory()">🕒 Histórico</button>
-          <button class="btn sm" onclick="renameReport()">✎ Renomear</button>
-          <button class="btn sm ok" onclick="saveReport()">💾 Salvar</button>
-          <button class="btn sm ghost" onclick="duplicateReport()">⧉ Duplicar</button>
-          <button class="btn sm danger" onclick="deleteReport()">🗑 Excluir</button>
+          <button class="btn sm ghost" onclick="openVersionHistory()" data-i18n="btn_history">🕒 Histórico</button>
+          <button class="btn sm" onclick="renameReport()" data-i18n="btn_rename">✎ Renomear</button>
+          <button class="btn sm ok" onclick="saveReport()" data-i18n="btn_save">💾 Salvar</button>
+          <button class="btn sm ghost" onclick="duplicateReport()" data-i18n="btn_duplicate">⧉ Duplicar</button>
+          <button class="btn sm danger" onclick="deleteReport()" data-i18n="btn_delete">🗑 Excluir</button>
           <div class="spacer"></div>
-          <button class="btn sm ghost" onclick="exportJSON()">⬇ JSON</button>
-          <button class="btn sm ghost" onclick="exportExcel()">⬇ Excel</button>
-          <button class="btn sm" onclick="window.print()">🖨 Imprimir</button>
+          <button class="btn sm ghost" onclick="exportJSON()" data-i18n="btn_json">⬇ JSON</button>
+          <button class="btn sm ghost" onclick="exportExcel()" data-i18n="btn_excel">⬇ Excel</button>
+          <button class="btn sm" onclick="window.print()" data-i18n="btn_print">🖨 Imprimir</button>
         </div>
 
         <div class="sheet" id="sheet">
@@ -284,29 +290,29 @@ body.filling,body.filling *{cursor:crosshair !important}
             <div class="title">
               <h2 contenteditable="true" data-k="reportTitle">Evaluation Results</h2>
               <div class="checks">
-                <label><input type="checkbox" data-k="chkDim"> Dimensional</label>
-                <label><input type="checkbox" data-k="chkMat"> Material</label>
-                <label><input type="checkbox" data-k="chkOut"> Outros</label>
+                <label><input type="checkbox" data-k="chkDim"> <span data-i18n="lbl_dimensional">Dimensional</span></label>
+                <label><input type="checkbox" data-k="chkMat"> <span data-i18n="lbl_material">Material</span></label>
+                <label><input type="checkbox" data-k="chkOut"> <span data-i18n="lbl_others">Outros</span></label>
                 <input type="text" data-k="outrosTxt" placeholder="___" style="width:120px">
               </div>
             </div>
           </div>
 
           <div class="info">
-            <div class="cell"><div class="lbl">Supplier</div><input data-k="supplier" value="Röchling Automotive do Brasil"></div>
-            <div class="cell"><div class="lbl">Supplier Number</div><input data-k="supplierNumber"></div>
-            <div class="cell"><div class="lbl">Part Number</div><input data-k="partNumber"></div>
-            <div class="cell"><div class="lbl">Revision Level</div><input data-k="revision"></div>
-            <div class="cell"><div class="lbl">Inspection Department</div><input data-k="inspDept" value="METROLOGY"></div>
-            <div class="cell"><div class="lbl">Part Name</div><input data-k="partName"></div>
-            <div class="cell"><div class="lbl">Report N°</div><input data-k="reportN"></div>
-            <div class="cell"><div class="lbl">Customer</div><input data-k="customer"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_supplier">Supplier</div><input data-k="supplier" value="Röchling Automotive do Brasil"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_suppliernumber">Supplier Number</div><input data-k="supplierNumber"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_partnumber">Part Number</div><input data-k="partNumber"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_revision">Revision Level</div><input data-k="revision"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_inspdept">Inspection Department</div><input data-k="inspDept" value="METROLOGY"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_partname">Part Name</div><input data-k="partName"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_reportn">Report N°</div><input data-k="reportN"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_customer">Customer</div><input data-k="customer"></div>
           </div>
 
           <table class="dim" id="tbl">
             <colgroup>
               <col style="width:60px"><col style="width:190px"><col style="width:150px"><col style="width:60px">
-              <col style="width:62px"><col style="width:62px">
+              <col style="width:80px"><col style="width:80px">
               <col><col><col><col><col>
               <col style="width:48px"><col style="width:58px"><col class="no-print" style="width:64px">
             </colgroup>
@@ -334,34 +340,34 @@ body.filling,body.filling *{cursor:crosshair !important}
             </thead>
             <tbody id="tbody"></tbody>
           </table>
-          <div class="no-print" style="margin:6px 0"><button class="btn sm ghost" onclick="resetHeaders()">↺ Restaurar nomes padrão das colunas</button> <span style="font-size:11px;color:var(--muted)">💡 Clique diretamente no título de qualquer coluna acima para renomeá-la</span></div>
+          <div class="no-print" style="margin:6px 0"><button class="btn sm ghost" onclick="resetHeaders()" data-i18n="btn_reset_headers">↺ Restaurar nomes padrão das colunas</button> <span style="font-size:11px;color:var(--muted)" data-i18n="hint_headers">💡 Clique diretamente no título de qualquer coluna acima para renomeá-la</span></div>
           <details class="no-print" style="margin:10px 0">
-            <summary style="cursor:pointer;font-weight:600;font-size:13px">🔣 Símbolos GD&T</summary>
-            <p style="font-size:11px;color:var(--muted);margin:8px 0">Clique num campo da tabela (ex: NOMINAL) e depois no símbolo — ele é inserido na posição do cursor.</p>
+            <summary style="cursor:pointer;font-weight:600;font-size:13px" data-i18n="gdt_summary">🔣 Símbolos GD&T</summary>
+            <p style="font-size:11px;color:var(--muted);margin:8px 0" data-i18n="gdt_hint">Clique num campo da tabela (ex: NOMINAL) e depois no símbolo — ele é inserido na posição do cursor.</p>
             <div id="gdtPalette" style="display:flex;flex-wrap:wrap;gap:6px"></div>
           </details>
 
           <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap" class="no-print">
-            <button class="btn sm" onclick="addRow()">+ Adicionar linha (fim)</button>
-            <button class="btn sm ghost" onclick="insertRow(0)">+ Adicionar linha (início)</button>
-            <button class="btn sm ghost" onclick="autoTolerance()">Aplicar tolerância padrão</button>
-            <button class="btn sm ghost" onclick="openSimModal('all')">🎲 Simular medições</button>
-            <span style="font-size:11px;color:var(--muted);align-self:center">💡 Use ⬆+ / ⬇+ em qualquer linha para inserir no meio da tabela · 🎲 simula valores dentro da tolerância a partir do NOMINAL</span>
+            <button class="btn sm" onclick="addRow()" data-i18n="btn_addrow_end">+ Adicionar linha (fim)</button>
+            <button class="btn sm ghost" onclick="insertRow(0)" data-i18n="btn_addrow_start">+ Adicionar linha (início)</button>
+            <button class="btn sm ghost" onclick="autoTolerance()" data-i18n="btn_autotol">Aplicar tolerância padrão</button>
+            <button class="btn sm ghost" onclick="openSimModal('all')" data-i18n="sim_measurements">🎲 Simular medições</button>
+            <span style="font-size:11px;color:var(--muted);align-self:center" data-i18n="hint_dragfill">💡 Use ⬆+ / ⬇+ em qualquer linha para inserir no meio da tabela · 🎲 simula valores dentro da tolerância a partir do NOMINAL</span>
             <div class="spacer"></div>
-            <span class="tag brand">Total: <span id="eTot">0</span></span>
+            <span class="tag brand"><span data-i18n="lbl_total">Total:</span> <span id="eTot">0</span></span>
             <span class="tag ok">OK: <span id="eOk">0</span></span>
-            <span class="tag nok">NOT OK: <span id="eNok">0</span></span>
+            <span class="tag nok"><span data-i18n="lbl_notok_count">NOT OK:</span> <span id="eNok">0</span></span>
           </div>
 
           <div class="obs">
-            <label>Observações</label>
+            <label data-i18n="lbl_obs">Observações</label>
             <textarea data-k="obs">1-FEITO MEDIÇÃO COM AMOSTRA NO GAUGE. 2-ALINHAMENTO POR ESFERAS. 3-</textarea>
           </div>
 
           <div class="sign">
-            <div class="cell"><div class="lbl">NAME</div><input data-k="signName" value="WELINGTON FREITAS"></div>
-            <div class="cell"><div class="lbl">TITLE</div><input data-k="signTitle" value="METROLOGIST"></div>
-            <div class="cell"><div class="lbl">DATE</div><input type="date" data-k="signDate"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_name">NAME</div><input data-k="signName" value="WELINGTON FREITAS"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_title_field">TITLE</div><input data-k="signTitle" value="METROLOGIST"></div>
+            <div class="cell"><div class="lbl" data-i18n="lbl_date">DATE</div><input type="date" data-k="signDate"></div>
           </div>
         </div>
       </section>
@@ -369,12 +375,12 @@ body.filling,body.filling *{cursor:crosshair !important}
       <!-- IMPORT -->
       <section class="view" id="v-import">
         <div class="card">
-          <h3>Importar relatório pronto (Excel)</h3>
-          <p style="color:var(--muted);margin-top:0">Aceita .xls / .xlsx / .csv — inclusive relatórios já preenchidos no padrão Röchling (com cabeçalho em 2 linhas: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). O sistema detecta automaticamente as colunas e o cabeçalho (fornecedor, part number, etc). Confira o mapeamento abaixo antes de importar.</p>
+          <h3 data-i18n="import_title">Importar relatório pronto (Excel)</h3>
+          <p style="color:var(--muted);margin-top:0" data-i18n="import_desc">Aceita .xls / .xlsx / .csv — inclusive relatórios já preenchidos no padrão Röchling (com cabeçalho em 2 linhas: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). O sistema detecta automaticamente as colunas e o cabeçalho (fornecedor, part number, etc). Confira o mapeamento abaixo antes de importar.</p>
           <div class="drop" id="drop" onclick="document.getElementById('xlsxInp').click()">
             <div class="ic">📁</div>
-            <h3>Arraste seu Excel aqui ou clique para selecionar</h3>
-            <p>.xls, .xlsx, .csv</p>
+            <h3 data-i18n="drop_title">Arraste seu Excel aqui ou clique para selecionar</h3>
+            <p data-i18n="drop_sub">.xls, .xlsx, .csv</p>
           </div>
           <input type="file" id="xlsxInp" accept=".xls,.xlsx,.csv" style="display:none">
 
@@ -404,7 +410,7 @@ body.filling,body.filling *{cursor:crosshair !important}
             </div>
           </div>
           <div style="margin-top:16px">
-            <button class="btn ghost" onclick="importJSONClick()">📥 Importar JSON</button>
+            <button class="btn ghost" onclick="importJSONClick()" data-i18n="btn_import_json">📥 Importar JSON</button>
             <input type="file" id="jsonInp" accept=".json" style="display:none">
           </div>
         </div>
@@ -412,33 +418,33 @@ body.filling,body.filling *{cursor:crosshair !important}
 
       <!-- SETTINGS -->
       <section class="view" id="v-settings">
-        <div class="card">
-          <h3>Preferências</h3>
+        <div class="card" style="margin-top:16px">
+          <h3 data-i18n="settings_prefs">Preferências</h3>
           <div style="display:grid;gap:14px;max-width:520px">
-            <label>Nome padrão do inspetor <input id="setInspector" value="WELINGTON FREITAS"></label>
-            <label>Cargo padrão <input id="setTitle" value="METROLOGIST"></label>
-            <label>Departamento padrão <input id="setDept" value="METROLOGY"></label>
-            <label>Fornecedor padrão <input id="setSupplier" value="Röchling Automotive do Brasil"></label>
-            <label>Observação padrão <textarea id="setObs">1-FEITO MEDIÇÃO COM AMOSTRA NO GAUGE. 2-ALINHAMENTO POR ESFERAS. 3-</textarea></label>
-            <div><button class="btn ok" onclick="saveSettings()">Salvar preferências</button></div>
+            <label><span data-i18n="lbl_inspector">Nome padrão do inspetor</span> <input id="setInspector" value="WELINGTON FREITAS"></label>
+            <label><span data-i18n="lbl_role">Cargo padrão</span> <input id="setTitle" value="METROLOGIST"></label>
+            <label><span data-i18n="lbl_dept">Departamento padrão</span> <input id="setDept" value="METROLOGY"></label>
+            <label><span data-i18n="lbl_supplier_def">Fornecedor padrão</span> <input id="setSupplier" value="Röchling Automotive do Brasil"></label>
+            <label><span data-i18n="lbl_obs_def">Observação padrão</span> <textarea id="setObs">1-FEITO MEDIÇÃO COM AMOSTRA NO GAUGE. 2-ALINHAMENTO POR ESFERAS. 3-</textarea></label>
+            <div><button class="btn ok" onclick="saveSettings()" data-i18n="btn_save_prefs">Salvar preferências</button></div>
           </div>
         </div>
         <div class="card" style="margin-top:16px">
-          <h3>☁ Nuvem (Supabase) — login e sincronização</h3>
-          <p style="color:var(--muted)">Conecte um projeto Supabase para acessar seus relatórios de qualquer dispositivo, com login por e-mail e senha. É opcional — sem isso, tudo continua salvo só neste navegador.</p>
+          <h3>☁ <span data-i18n="cloud_title">Nuvem (Supabase) — login e sincronização</span></h3>
+          <p style="color:var(--muted)" data-i18n="cloud_desc">Conecte um projeto Supabase para acessar seus relatórios de qualquer dispositivo, com login por e-mail e senha. É opcional — sem isso, tudo continua salvo só neste navegador.</p>
           <div id="cloudStatus" style="margin-bottom:12px;font-size:13px"></div>
           <div style="display:grid;gap:10px;max-width:520px">
             <label>Supabase Project URL <input id="cloudUrl" placeholder="https://xxxxxxxx.supabase.co"></label>
             <label>Supabase anon public key <input id="cloudKey" placeholder="eyJhbGciOi..."></label>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn ok" onclick="saveCloudConfig()">💾 Conectar</button>
-              <button class="btn ghost" onclick="disconnectCloud()">Desconectar</button>
-              <button class="btn ghost" onclick="cloudSignOut()" id="btnCloudLogout" style="display:none">🚪 Sair da conta</button>
-              <button class="btn ghost" onclick="syncNow()" id="btnSyncNow" style="display:none">🔄 Sincronizar agora</button>
+              <button class="btn ok" onclick="saveCloudConfig()" data-i18n="btn_connect">💾 Conectar</button>
+              <button class="btn ghost" onclick="disconnectCloud()" data-i18n="btn_disconnect">Desconectar</button>
+              <button class="btn ghost" onclick="cloudSignOut()" id="btnCloudLogout" style="display:none" data-i18n="btn_signout">🚪 Sair da conta</button>
+              <button class="btn ghost" onclick="syncNow()" id="btnSyncNow" style="display:none" data-i18n="btn_syncnow">🔄 Sincronizar agora</button>
             </div>
           </div>
           <details style="margin-top:16px">
-            <summary style="cursor:pointer;font-weight:600;font-size:13px">Ver script SQL de configuração (rodar 1x no SQL Editor do Supabase)</summary>
+            <summary style="cursor:pointer;font-weight:600;font-size:13px" data-i18n="cloud_sql_summary">Ver script SQL de configuração (rodar 1x no SQL Editor do Supabase)</summary>
             <pre id="cloudSql" style="background:var(--panel-2);padding:14px;border-radius:8px;font-size:11.5px;overflow-x:auto;margin-top:10px;white-space:pre-wrap">create table if not exists public.dimensional_reports (
   id text primary key,
   user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
@@ -474,20 +480,20 @@ on public.dimensional_report_versions
 for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);</pre>
-            <button class="btn sm ghost" style="margin-top:8px" onclick="copySql()">📋 Copiar SQL</button>
+            <button class="btn sm ghost" style="margin-top:8px" onclick="copySql()" data-i18n="btn_copy_sql">📋 Copiar SQL</button>
           </details>
         </div>
         <div class="card" style="margin-top:16px">
-          <h3>Backup completo</h3>
-          <p style="color:var(--muted)">Exporta todos os relatórios e configurações em um único arquivo.</p>
-          <button class="btn" onclick="backupAll()">⬇ Baixar backup</button>
-          <button class="btn ghost" onclick="document.getElementById('backupInp').click()">⬆ Restaurar backup</button>
+          <h3 data-i18n="settings_backup">Backup completo</h3>
+          <p style="color:var(--muted)" data-i18n="backup_desc">Exporta todos os relatórios e configurações em um único arquivo.</p>
+          <button class="btn" onclick="backupAll()" data-i18n="btn_download_backup">⬇ Baixar backup</button>
+          <button class="btn ghost" onclick="document.getElementById('backupInp').click()" data-i18n="btn_restore_backup">⬆ Restaurar backup</button>
           <input type="file" id="backupInp" accept=".json" style="display:none">
         </div>
         <div class="card" style="margin-top:16px;border-color:var(--nok)">
-          <h3 style="color:var(--nok)">Zona de perigo</h3>
-          <p style="color:var(--muted)">Remove todos os relatórios salvos deste navegador.</p>
-          <button class="btn danger" onclick="wipeAll()">🗑 Apagar tudo</button>
+          <h3 style="color:var(--nok)" data-i18n="danger_zone">Zona de perigo</h3>
+          <p style="color:var(--muted)" data-i18n="danger_desc">Remove todos os relatórios salvos deste navegador.</p>
+          <button class="btn danger" onclick="wipeAll()" data-i18n="btn_wipe_all">🗑 Apagar tudo</button>
         </div>
       </section>
     </div>
@@ -497,17 +503,17 @@ with check (auth.uid() = user_id);</pre>
 <div class="authbg" id="authbg">
   <div class="authcard">
     <h2>🔒 Röchling Dimensional</h2>
-    <p class="sub" id="authSub">Entre para acessar seus relatórios na nuvem.</p>
+    <p class="sub" id="authSub" data-i18n="auth_sub_login">Entre para acessar seus relatórios na nuvem.</p>
     <div class="authtabs">
-      <button id="tabLogin" class="active" onclick="switchAuthTab('login')">Entrar</button>
-      <button id="tabSignup" onclick="switchAuthTab('signup')">Criar conta</button>
+      <button id="tabLogin" class="active" onclick="switchAuthTab('login')" data-i18n="auth_login">Entrar</button>
+      <button id="tabSignup" onclick="switchAuthTab('signup')" data-i18n="auth_signup">Criar conta</button>
     </div>
-    <input type="email" id="authEmail" placeholder="E-mail" autocomplete="username">
-    <input type="password" id="authPass" placeholder="Senha" autocomplete="current-password">
+    <input type="email" id="authEmail" data-i18n-ph="auth_email" placeholder="E-mail" autocomplete="username">
+    <input type="password" id="authPass" data-i18n-ph="auth_pass" placeholder="Senha" autocomplete="current-password">
     <div class="autherr" id="authErr"></div>
-    <button class="btn ok" style="width:100%" id="authSubmitBtn" onclick="authSubmit()">Entrar</button>
+    <button class="btn ok" style="width:100%" id="authSubmitBtn" onclick="authSubmit()" data-i18n="auth_login">Entrar</button>
     <div style="text-align:center;margin-top:12px">
-      <a href="#" style="font-size:12px;color:var(--muted)" onclick="authForgotPassword();return false">Esqueci minha senha</a>
+      <a href="#" style="font-size:12px;color:var(--muted)" onclick="authForgotPassword();return false" data-i18n="auth_forgot">Esqueci minha senha</a>
     </div>
   </div>
 </div>
@@ -536,28 +542,35 @@ let importCtx={wb:null,sheet:null,rows:null};
 
 const uid=()=>'R'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const blankRow=(item='')=>({item,char:'',nominal:'',spec:'',low:'',upper:'',m:['','','','',''],ok:'',nok:''});
-const DEFAULT_HEADERS={item:'ITEM',char:'CHARACTERISTIC',nominal:'NOMINAL',spec:'SPEC',tolerance:'TOLERANCE',results:'SUPPLIER MEASUREMENT RESULTS',low:'LOW',upper:'UPPER',m0:'1',m1:'2',m2:'3',m3:'4',m4:'5',ok:'OK',nok:'NOT OK'};
+const DEFAULT_HEADERS_BY_LANG={
+  pt:{item:'ITEM',char:'CARACTERÍSTICA',nominal:'NOMINAL',spec:'ESPEC.',tolerance:'TOLERÂNCIA',results:'RESULTADOS DE MEDIÇÃO DO FORNECEDOR',low:'INFERIOR',upper:'SUPERIOR',m0:'1',m1:'2',m2:'3',m3:'4',m4:'5',ok:'OK',nok:'NÃO OK'},
+  en:{item:'ITEM',char:'CHARACTERISTIC',nominal:'NOMINAL',spec:'SPEC',tolerance:'TOLERANCE',results:'SUPPLIER MEASUREMENT RESULTS',low:'LOW',upper:'UPPER',m0:'1',m1:'2',m2:'3',m3:'4',m4:'5',ok:'OK',nok:'NOT OK'},
+  es:{item:'ÍTEM',char:'CARACTERÍSTICA',nominal:'NOMINAL',spec:'ESPEC.',tolerance:'TOLERANCIA',results:'RESULTADOS DE MEDICIÓN DEL PROVEEDOR',low:'INFERIOR',upper:'SUPERIOR',m0:'1',m1:'2',m2:'3',m3:'4',m4:'5',ok:'OK',nok:'NO OK'},
+  it:{item:'VOCE',char:'CARATTERISTICA',nominal:'NOMINALE',spec:'SPEC.',tolerance:'TOLLERANZA',results:'RISULTATI DI MISURA DEL FORNITORE',low:'INFERIORE',upper:'SUPERIORE',m0:'1',m1:'2',m2:'3',m3:'4',m4:'5',ok:'OK',nok:'NON OK'},
+  de:{item:'POS.',char:'MERKMAL',nominal:'NOMINAL',spec:'SPEZ.',tolerance:'TOLERANZ',results:'MESSERGEBNISSE DES LIEFERANTEN',low:'UNTEN',upper:'OBEN',m0:'1',m1:'2',m2:'3',m3:'4',m4:'5',ok:'OK',nok:'NICHT OK'}
+};
+function defaultHeaders(){return Object.assign({},DEFAULT_HEADERS_BY_LANG[currentLang]||DEFAULT_HEADERS_BY_LANG.pt)}
 function blankReport(name){
   return{name,createdAt:new Date().toISOString(),version:1,title:'Evaluation Results',chkDim:true,chkMat:false,chkOut:false,outrosTxt:'',
     supplier:settings.supplier,supplierNumber:'',partNumber:'',revision:'',
     inspDept:settings.dept,partName:'',reportN:'',customer:'',
-    headers:Object.assign({},DEFAULT_HEADERS),
+    headers:Object.assign({},defaultHeaders()),
     rows:['1.1','1.2','2.1','2.2','3.1','3.2','4.1','4.2','5.1','5.2','6.1','6.2','7.1','7.2','7.3','8.1','8.2','8.3','9.1','10.1','10.2','10.3'].map(blankRow),
     obs:settings.obs,signName:settings.inspector,signTitle:settings.title,signDate:new Date().toISOString().slice(0,10)
   };
 }
 function renderHeaders(){
   const r=state.reports[state.current];if(!r)return;
-  if(!r.headers)r.headers=Object.assign({},DEFAULT_HEADERS);
+  if(!r.headers)r.headers=Object.assign({},defaultHeaders());
   document.querySelectorAll('table.dim thead [data-hk]').forEach(th=>{
     const k=th.dataset.hk;
-    if(document.activeElement!==th)th.textContent=r.headers[k]??DEFAULT_HEADERS[k]??'';
+    if(document.activeElement!==th)th.textContent=r.headers[k]??defaultHeaders()[k]??'';
   });
 }
 document.querySelectorAll('table.dim thead [data-hk]').forEach(th=>{
   th.addEventListener('input',()=>{
     const r=state.reports[state.current];if(!r)return;
-    if(!r.headers)r.headers=Object.assign({},DEFAULT_HEADERS);
+    if(!r.headers)r.headers=Object.assign({},defaultHeaders());
     r.headers[th.dataset.hk]=th.textContent;
     persist();
   });
@@ -565,7 +578,7 @@ document.querySelectorAll('table.dim thead [data-hk]').forEach(th=>{
 });
 function resetHeaders(){
   const r=state.reports[state.current];if(!r)return;
-  r.headers=Object.assign({},DEFAULT_HEADERS);
+  r.headers=Object.assign({},defaultHeaders());
   renderHeaders();persist();toast('Nomes das colunas restaurados','ok');
 }
 
@@ -609,10 +622,10 @@ function initCloud(){
 function updateCloudStatus(){
   const el=document.getElementById('cloudStatus');if(!el)return;
   const logoutBtn=document.getElementById('btnCloudLogout'),syncBtn=document.getElementById('btnSyncNow');
-  if(!cloudCfg){el.innerHTML='<span style="color:var(--muted)">Não conectado — informe a URL e a chave do seu projeto Supabase acima.</span>';if(logoutBtn)logoutBtn.style.display='none';if(syncBtn)syncBtn.style.display='none';return}
-  if(!sb){el.innerHTML='<span style="color:var(--nok)">Configuração salva, mas houve erro ao conectar. Confira a URL/chave.</span>';return}
-  if(cloudUser){el.innerHTML='<span style="color:var(--ok)">✓ Conectado como '+escape(cloudUser.email)+'</span>';if(logoutBtn)logoutBtn.style.display='';if(syncBtn)syncBtn.style.display=''}
-  else{el.innerHTML='<span style="color:var(--muted)">Conectado ao projeto — faça login para sincronizar.</span>';if(logoutBtn)logoutBtn.style.display='none';if(syncBtn)syncBtn.style.display='none'}
+  if(!cloudCfg){el.innerHTML='<span style="color:var(--muted)">'+t('cloud_status_off')+'</span>';if(logoutBtn)logoutBtn.style.display='none';if(syncBtn)syncBtn.style.display='none';return}
+  if(!sb){el.innerHTML='<span style="color:var(--nok)">'+t('cloud_status_err')+'</span>';return}
+  if(cloudUser){el.innerHTML='<span style="color:var(--ok)">✓ '+t('cloud_status_on')+' '+escape(cloudUser.email)+'</span>';if(logoutBtn)logoutBtn.style.display='';if(syncBtn)syncBtn.style.display=''}
+  else{el.innerHTML='<span style="color:var(--muted)">'+t('cloud_status_needlogin')+'</span>';if(logoutBtn)logoutBtn.style.display='none';if(syncBtn)syncBtn.style.display='none'}
 }
 function saveCloudConfig(){
   const url=document.getElementById('cloudUrl').value.trim();
@@ -637,9 +650,9 @@ function copySql(){
 function switchAuthTab(tab){
   document.getElementById('tabLogin').classList.toggle('active',tab==='login');
   document.getElementById('tabSignup').classList.toggle('active',tab==='signup');
-  document.getElementById('authSubmitBtn').textContent=tab==='login'?'Entrar':'Criar conta';
+  document.getElementById('authSubmitBtn').textContent=tab==='login'?t('auth_login'):t('auth_signup');
   document.getElementById('authSubmitBtn').dataset.mode=tab;
-  document.getElementById('authSub').textContent=tab==='login'?'Entre para acessar seus relatórios na nuvem.':'Crie sua conta para começar a sincronizar.';
+  document.getElementById('authSub').textContent=tab==='login'?t('auth_sub_login'):t('auth_sub_signup');
   document.getElementById('authErr').textContent='';
 }
 async function authSubmit(){
@@ -773,12 +786,255 @@ function toast(msg,kind=''){const t=document.getElementById('toast');t.textConte
 
 /* Navigation */
 document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
-const titles={dashboard:['Dashboard','Visão geral dos relatórios dimensionais'],reports:['Relatórios','Todos os relatórios gerados'],editor:['Editor de relatório','Crie e edite relatórios dimensionais Röchling'],import:['Importar Excel','Carregue planilhas .xls/.xlsx e converta em relatórios'],settings:['Configurações','Preferências e backup do sistema']};
+const I18N={
+  pt:{
+    nav_dashboard:'Dashboard',nav_reports:'Relatórios',nav_editor:'Editor',nav_import:'Importar Excel',nav_settings:'Configurações',
+    title_dashboard:'Dashboard',sub_dashboard:'Visão geral dos relatórios dimensionais',
+    title_reports:'Relatórios',sub_reports:'Todos os relatórios gerados',
+    title_editor:'Editor de relatório',sub_editor:'Crie e edite relatórios dimensionais Röchling',
+    title_import:'Importar Excel',sub_import:'Carregue planilhas .xls/.xlsx e converta em relatórios',
+    title_settings:'Configurações',sub_settings:'Preferências e backup do sistema',
+    kpi_total:'Total de relatórios',kpi_parts:'Peças inspecionadas',kpi_customers:'Clientes atendidos',kpi_topclient:'Relatórios por Cliente',
+    chart_bar:'Aprovação por relatório',chart_pie:'Status geral',chart_line:'Tendência de conformidade',chart_customer:'Relatórios por Customer',
+    lang_label:'Idioma do sistema',btn_theme:'Alternar tema',btn_new_report:'+ Novo relatório',
+    recent_reports:'Últimos relatórios',
+    search_ph:'🔍 Buscar por nome, part number, report N°, customer...',
+    filter_all_status:'Todos os status',filter_ok:'Apenas aprovados',filter_nok:'Com reprovações',filter_all_clients:'Todos os clientes',
+    btn_new:'+ Novo',th_name:'Nome',th_partnumber:'Part Number',th_customer:'Customer',th_reportn:'Report N°',th_date:'Data',th_items:'Itens',th_status:'Status',th_actions:'Ações',
+    btn_history:'🕒 Histórico',btn_rename:'✎ Renomear',btn_save:'💾 Salvar',btn_duplicate:'⧉ Duplicar',btn_delete:'🗑 Excluir',
+    btn_json:'⬇ JSON',btn_excel:'⬇ Excel',btn_print:'🖨 Imprimir',
+    lbl_dimensional:'Dimensional',lbl_material:'Material',lbl_others:'Outros',
+    lbl_supplier:'SUPPLIER',lbl_suppliernumber:'SUPPLIER NUMBER',lbl_partnumber:'PART NUMBER',lbl_revision:'REVISION LEVEL',
+    lbl_inspdept:'INSPECTION DEPARTMENT',lbl_partname:'PART NAME',lbl_reportn:'REPORT N°',lbl_customer:'CUSTOMER',
+    btn_addrow_end:'+ Adicionar linha (fim)',btn_addrow_start:'+ Adicionar linha (início)',btn_autotol:'Aplicar tolerância padrão',
+    hint_dragfill:'💡 Use ⬆+ / ⬇+ em qualquer linha para inserir no meio da tabela · 🎲 simula valores dentro da tolerância a partir do NOMINAL',
+    btn_reset_headers:'↺ Restaurar nomes padrão das colunas',hint_headers:'💡 Clique diretamente no título de qualquer coluna acima para renomeá-la',
+    gdt_summary:'🔣 Símbolos GD&T',gdt_hint:'Clique num campo da tabela (ex: NOMINAL) e depois no símbolo — ele é inserido na posição do cursor.',
+    lbl_obs:'Observações',lbl_name:'NAME',lbl_title_field:'TITLE',lbl_date:'DATE',
+    import_title:'Importar relatório pronto (Excel)',
+    import_desc:'Aceita .xls / .xlsx / .csv — inclusive relatórios já preenchidos no padrão Röchling (com cabeçalho em 2 linhas: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). O sistema detecta automaticamente as colunas e o cabeçalho (fornecedor, part number, etc). Confira o mapeamento abaixo antes de importar.',
+    drop_title:'Arraste seu Excel aqui ou clique para selecionar',drop_sub:'.xls, .xlsx, .csv',
+    btn_import_json:'📥 Importar JSON',
+    settings_prefs:'Preferências',settings_backup:'Backup completo',
+    lbl_inspector:'Nome padrão do inspetor',lbl_role:'Cargo padrão',
+    lbl_dept:'Departamento padrão',lbl_supplier_def:'Fornecedor padrão',lbl_obs_def:'Observação padrão',btn_save_prefs:'Salvar preferências',
+    cloud_title:'Nuvem (Supabase) — login e sincronização',cloud_desc:'Conecte um projeto Supabase para acessar seus relatórios de qualquer dispositivo, com login por e-mail e senha. É opcional — sem isso, tudo continua salvo só neste navegador.',
+    btn_connect:'💾 Conectar',btn_disconnect:'Desconectar',btn_signout:'🚪 Sair da conta',btn_syncnow:'🔄 Sincronizar agora',
+    cloud_sql_summary:'Ver script SQL de configuração (rodar 1x no SQL Editor do Supabase)',btn_copy_sql:'📋 Copiar SQL',
+    backup_desc:'Exporta todos os relatórios e configurações em um único arquivo.',btn_download_backup:'⬇ Baixar backup',btn_restore_backup:'⬆ Restaurar backup',
+    danger_zone:'Zona de perigo',danger_desc:'Remove todos os relatórios salvos deste navegador.',btn_wipe_all:'🗑 Apagar tudo',
+    cloud_status_off:'Não conectado — informe a URL e a chave do seu projeto Supabase acima.',cloud_status_err:'Configuração salva, mas houve erro ao conectar. Confira a URL/chave.',
+    cloud_status_on:'Conectado como',cloud_status_needlogin:'Conectado ao projeto — faça login para sincronizar.',
+    auth_sub_login:'Entre para acessar seus relatórios na nuvem.',auth_sub_signup:'Crie sua conta para começar a sincronizar.',
+    auth_login:'Entrar',auth_signup:'Criar conta',auth_email:'E-mail',auth_pass:'Senha',auth_forgot:'Esqueci minha senha',
+    sim_measurements:'🎲 Simular medições',lbl_total:'Total:',lbl_notok_count:'NOT OK:',
+    rowmenu_sim:'🎲 Simular medições',rowmenu_up:'⬆ Inserir linha acima',rowmenu_down:'⬇ Inserir linha abaixo',rowmenu_auto:'↺ Recalcular OK/NOT OK automaticamente',rowmenu_del:'✕ Remover linha',
+    tt_manual:'Definido manualmente',tt_auto:'Calculado automaticamente',
+  },
+  en:{
+    nav_dashboard:'Dashboard',nav_reports:'Reports',nav_editor:'Editor',nav_import:'Import Excel',nav_settings:'Settings',
+    title_dashboard:'Dashboard',sub_dashboard:'Overview of dimensional reports',
+    title_reports:'Reports',sub_reports:'All generated reports',
+    title_editor:'Report editor',sub_editor:'Create and edit Röchling dimensional reports',
+    title_import:'Import Excel',sub_import:'Upload .xls/.xlsx spreadsheets and convert them into reports',
+    title_settings:'Settings',sub_settings:'System preferences and backup',
+    kpi_total:'Total reports',kpi_parts:'Parts inspected',kpi_customers:'Customers served',kpi_topclient:'Reports per Customer',
+    chart_bar:'Approval by report',chart_pie:'Overall status',chart_line:'Conformity trend',chart_customer:'Reports by Customer',
+    lang_label:'System language',btn_theme:'Toggle theme',btn_new_report:'+ New report',
+    recent_reports:'Recent reports',
+    search_ph:'🔍 Search by name, part number, report No., customer...',
+    filter_all_status:'All statuses',filter_ok:'Approved only',filter_nok:'With rejections',filter_all_clients:'All customers',
+    btn_new:'+ New',th_name:'Name',th_partnumber:'Part Number',th_customer:'Customer',th_reportn:'Report No.',th_date:'Date',th_items:'Items',th_status:'Status',th_actions:'Actions',
+    btn_history:'🕒 History',btn_rename:'✎ Rename',btn_save:'💾 Save',btn_duplicate:'⧉ Duplicate',btn_delete:'🗑 Delete',
+    btn_json:'⬇ JSON',btn_excel:'⬇ Excel',btn_print:'🖨 Print',
+    lbl_dimensional:'Dimensional',lbl_material:'Material',lbl_others:'Other',
+    lbl_supplier:'SUPPLIER',lbl_suppliernumber:'SUPPLIER NUMBER',lbl_partnumber:'PART NUMBER',lbl_revision:'REVISION LEVEL',
+    lbl_inspdept:'INSPECTION DEPARTMENT',lbl_partname:'PART NAME',lbl_reportn:'REPORT N°',lbl_customer:'CUSTOMER',
+    btn_addrow_end:'+ Add row (end)',btn_addrow_start:'+ Add row (start)',btn_autotol:'Apply default tolerance',
+    hint_dragfill:'💡 Use ⬆+ / ⬇+ on any row to insert in the middle of the table · 🎲 simulates values within tolerance based on NOMINAL',
+    btn_reset_headers:'↺ Restore default column names',hint_headers:'💡 Click directly on any column title above to rename it',
+    gdt_summary:'🔣 GD&T Symbols',gdt_hint:'Click a table field (e.g. NOMINAL) then click the symbol — it is inserted at the cursor position.',
+    lbl_obs:'Notes',lbl_name:'NAME',lbl_title_field:'TITLE',lbl_date:'DATE',
+    import_title:'Import a finished report (Excel)',
+    import_desc:'Accepts .xls / .xlsx / .csv — including reports already filled out in the Röchling standard (with a 2-row header: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). The system automatically detects the columns and header info (supplier, part number, etc). Check the mapping below before importing.',
+    drop_title:'Drag your Excel file here or click to select',drop_sub:'.xls, .xlsx, .csv',
+    btn_import_json:'📥 Import JSON',
+    settings_prefs:'Preferences',settings_backup:'Full backup',
+    lbl_inspector:'Default inspector name',lbl_role:'Default role',
+    lbl_dept:'Default department',lbl_supplier_def:'Default supplier',lbl_obs_def:'Default notes',btn_save_prefs:'Save preferences',
+    cloud_title:'Cloud (Supabase) — login and sync',cloud_desc:'Connect a Supabase project to access your reports from any device, with email/password login. Optional — without it, everything stays saved only in this browser.',
+    btn_connect:'💾 Connect',btn_disconnect:'Disconnect',btn_signout:'🚪 Sign out',btn_syncnow:'🔄 Sync now',
+    cloud_sql_summary:'View setup SQL script (run once in the Supabase SQL Editor)',btn_copy_sql:'📋 Copy SQL',
+    backup_desc:'Exports all reports and settings into a single file.',btn_download_backup:'⬇ Download backup',btn_restore_backup:'⬆ Restore backup',
+    danger_zone:'Danger zone',danger_desc:'Removes all reports saved in this browser.',btn_wipe_all:'🗑 Delete everything',
+    cloud_status_off:'Not connected — enter your Supabase project URL and key above.',cloud_status_err:'Settings saved, but connection failed. Check the URL/key.',
+    cloud_status_on:'Connected as',cloud_status_needlogin:'Connected to the project — log in to sync.',
+    auth_sub_login:'Sign in to access your reports in the cloud.',auth_sub_signup:'Create your account to start syncing.',
+    auth_login:'Sign in',auth_signup:'Create account',auth_email:'Email',auth_pass:'Password',auth_forgot:'Forgot my password',
+    sim_measurements:'🎲 Simulate measurements',lbl_total:'Total:',lbl_notok_count:'NOT OK:',
+    rowmenu_sim:'🎲 Simulate measurements',rowmenu_up:'⬆ Insert row above',rowmenu_down:'⬇ Insert row below',rowmenu_auto:'↺ Recalculate OK/NOT OK automatically',rowmenu_del:'✕ Remove row',
+    tt_manual:'Set manually',tt_auto:'Calculated automatically',
+  },
+  es:{
+    nav_dashboard:'Panel',nav_reports:'Informes',nav_editor:'Editor',nav_import:'Importar Excel',nav_settings:'Configuración',
+    title_dashboard:'Panel',sub_dashboard:'Resumen de los informes dimensionales',
+    title_reports:'Informes',sub_reports:'Todos los informes generados',
+    title_editor:'Editor de informe',sub_editor:'Cree y edite informes dimensionales Röchling',
+    title_import:'Importar Excel',sub_import:'Cargue hojas .xls/.xlsx y conviértalas en informes',
+    title_settings:'Configuración',sub_settings:'Preferencias y copia de seguridad del sistema',
+    kpi_total:'Total de informes',kpi_parts:'Piezas inspeccionadas',kpi_customers:'Clientes atendidos',kpi_topclient:'Informes por Cliente',
+    chart_bar:'Aprobación por informe',chart_pie:'Estado general',chart_line:'Tendencia de conformidad',chart_customer:'Informes por Cliente',
+    lang_label:'Idioma del sistema',btn_theme:'Cambiar tema',btn_new_report:'+ Nuevo informe',
+    recent_reports:'Últimos informes',
+    search_ph:'🔍 Buscar por nombre, part number, N° de informe, cliente...',
+    filter_all_status:'Todos los estados',filter_ok:'Solo aprobados',filter_nok:'Con rechazos',filter_all_clients:'Todos los clientes',
+    btn_new:'+ Nuevo',th_name:'Nombre',th_partnumber:'Part Number',th_customer:'Cliente',th_reportn:'N° de informe',th_date:'Fecha',th_items:'Ítems',th_status:'Estado',th_actions:'Acciones',
+    btn_history:'🕒 Historial',btn_rename:'✎ Renombrar',btn_save:'💾 Guardar',btn_duplicate:'⧉ Duplicar',btn_delete:'🗑 Eliminar',
+    btn_json:'⬇ JSON',btn_excel:'⬇ Excel',btn_print:'🖨 Imprimir',
+    lbl_dimensional:'Dimensional',lbl_material:'Material',lbl_others:'Otros',
+    lbl_supplier:'PROVEEDOR',lbl_suppliernumber:'N° DE PROVEEDOR',lbl_partnumber:'PART NUMBER',lbl_revision:'NIVEL DE REVISIÓN',
+    lbl_inspdept:'DEPARTAMENTO DE INSPECCIÓN',lbl_partname:'NOMBRE DE LA PIEZA',lbl_reportn:'N° DE INFORME',lbl_customer:'CLIENTE',
+    btn_addrow_end:'+ Agregar fila (final)',btn_addrow_start:'+ Agregar fila (inicio)',btn_autotol:'Aplicar tolerancia estándar',
+    hint_dragfill:'💡 Use ⬆+ / ⬇+ en cualquier fila para insertar en medio de la tabla · 🎲 simula valores dentro de la tolerancia a partir del NOMINAL',
+    btn_reset_headers:'↺ Restaurar nombres de columna predeterminados',hint_headers:'💡 Haga clic directamente en el título de cualquier columna para renombrarla',
+    gdt_summary:'🔣 Símbolos GD&T',gdt_hint:'Haga clic en un campo de la tabla (ej: NOMINAL) y luego en el símbolo — se inserta en la posición del cursor.',
+    lbl_obs:'Observaciones',lbl_name:'NOMBRE',lbl_title_field:'CARGO',lbl_date:'FECHA',
+    import_title:'Importar informe ya elaborado (Excel)',
+    import_desc:'Acepta .xls / .xlsx / .csv — incluso informes ya completados en el estándar Röchling (con encabezado de 2 filas: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). El sistema detecta automáticamente las columnas y los datos de encabezado (proveedor, part number, etc). Revise el mapeo abajo antes de importar.',
+    drop_title:'Arrastre su Excel aquí o haga clic para seleccionar',drop_sub:'.xls, .xlsx, .csv',
+    btn_import_json:'📥 Importar JSON',
+    settings_prefs:'Preferencias',settings_backup:'Copia de seguridad completa',
+    lbl_inspector:'Nombre predeterminado del inspector',lbl_role:'Cargo predeterminado',
+    lbl_dept:'Departamento predeterminado',lbl_supplier_def:'Proveedor predeterminado',lbl_obs_def:'Observación predeterminada',btn_save_prefs:'Guardar preferencias',
+    cloud_title:'Nube (Supabase) — inicio de sesión y sincronización',cloud_desc:'Conecte un proyecto Supabase para acceder a sus informes desde cualquier dispositivo, con inicio de sesión por correo y contraseña. Es opcional — sin esto, todo permanece guardado solo en este navegador.',
+    btn_connect:'💾 Conectar',btn_disconnect:'Desconectar',btn_signout:'🚪 Cerrar sesión',btn_syncnow:'🔄 Sincronizar ahora',
+    cloud_sql_summary:'Ver script SQL de configuración (ejecutar 1 vez en el SQL Editor de Supabase)',btn_copy_sql:'📋 Copiar SQL',
+    backup_desc:'Exporta todos los informes y configuraciones en un único archivo.',btn_download_backup:'⬇ Descargar copia de seguridad',btn_restore_backup:'⬆ Restaurar copia de seguridad',
+    danger_zone:'Zona de peligro',danger_desc:'Elimina todos los informes guardados en este navegador.',btn_wipe_all:'🗑 Eliminar todo',
+    cloud_status_off:'No conectado — indique la URL y la clave de su proyecto Supabase arriba.',cloud_status_err:'Configuración guardada, pero hubo un error al conectar. Revise la URL/clave.',
+    cloud_status_on:'Conectado como',cloud_status_needlogin:'Conectado al proyecto — inicie sesión para sincronizar.',
+    auth_sub_login:'Inicie sesión para acceder a sus informes en la nube.',auth_sub_signup:'Cree su cuenta para empezar a sincronizar.',
+    auth_login:'Ingresar',auth_signup:'Crear cuenta',auth_email:'Correo electrónico',auth_pass:'Contraseña',auth_forgot:'Olvidé mi contraseña',
+    sim_measurements:'🎲 Simular mediciones',lbl_total:'Total:',lbl_notok_count:'NOT OK:',
+    rowmenu_sim:'🎲 Simular mediciones',rowmenu_up:'⬆ Insertar fila arriba',rowmenu_down:'⬇ Insertar fila abajo',rowmenu_auto:'↺ Recalcular OK/NOT OK automáticamente',rowmenu_del:'✕ Eliminar fila',
+    tt_manual:'Definido manualmente',tt_auto:'Calculado automáticamente',
+  },
+  it:{
+    nav_dashboard:'Dashboard',nav_reports:'Rapporti',nav_editor:'Editor',nav_import:'Importa Excel',nav_settings:'Impostazioni',
+    title_dashboard:'Dashboard',sub_dashboard:'Panoramica dei rapporti dimensionali',
+    title_reports:'Rapporti',sub_reports:'Tutti i rapporti generati',
+    title_editor:'Editor rapporto',sub_editor:'Crea e modifica rapporti dimensionali Röchling',
+    title_import:'Importa Excel',sub_import:'Carica fogli .xls/.xlsx e convertili in rapporti',
+    title_settings:'Impostazioni',sub_settings:'Preferenze e backup del sistema',
+    kpi_total:'Totale rapporti',kpi_parts:'Pezzi ispezionati',kpi_customers:'Clienti serviti',kpi_topclient:'Rapporti per Cliente',
+    chart_bar:'Approvazione per rapporto',chart_pie:'Stato generale',chart_line:'Andamento conformità',chart_customer:'Rapporti per Cliente',
+    lang_label:'Lingua del sistema',btn_theme:'Cambia tema',btn_new_report:'+ Nuovo rapporto',
+    recent_reports:'Rapporti recenti',
+    search_ph:'🔍 Cerca per nome, part number, N° rapporto, cliente...',
+    filter_all_status:'Tutti gli stati',filter_ok:'Solo approvati',filter_nok:'Con non conformità',filter_all_clients:'Tutti i clienti',
+    btn_new:'+ Nuovo',th_name:'Nome',th_partnumber:'Part Number',th_customer:'Cliente',th_reportn:'N° Rapporto',th_date:'Data',th_items:'Voci',th_status:'Stato',th_actions:'Azioni',
+    btn_history:'🕒 Cronologia',btn_rename:'✎ Rinomina',btn_save:'💾 Salva',btn_duplicate:'⧉ Duplica',btn_delete:'🗑 Elimina',
+    btn_json:'⬇ JSON',btn_excel:'⬇ Excel',btn_print:'🖨 Stampa',
+    lbl_dimensional:'Dimensionale',lbl_material:'Materiale',lbl_others:'Altro',
+    lbl_supplier:'FORNITORE',lbl_suppliernumber:'NUMERO FORNITORE',lbl_partnumber:'PART NUMBER',lbl_revision:'LIVELLO DI REVISIONE',
+    lbl_inspdept:'REPARTO ISPEZIONE',lbl_partname:'NOME PARTE',lbl_reportn:'N° RAPPORTO',lbl_customer:'CLIENTE',
+    btn_addrow_end:'+ Aggiungi riga (fine)',btn_addrow_start:'+ Aggiungi riga (inizio)',btn_autotol:'Applica tolleranza standard',
+    hint_dragfill:'💡 Usa ⬆+ / ⬇+ su qualsiasi riga per inserire in mezzo alla tabella · 🎲 simula valori entro la tolleranza a partire dal NOMINALE',
+    btn_reset_headers:'↺ Ripristina nomi colonna predefiniti',hint_headers:'💡 Clicca direttamente sul titolo di qualsiasi colonna sopra per rinominarla',
+    gdt_summary:'🔣 Simboli GD&T',gdt_hint:'Clicca su un campo della tabella (es: NOMINALE) poi sul simbolo — viene inserito nella posizione del cursore.',
+    lbl_obs:'Osservazioni',lbl_name:'NOME',lbl_title_field:'RUOLO',lbl_date:'DATA',
+    import_title:'Importa rapporto già compilato (Excel)',
+    import_desc:'Accetta .xls / .xlsx / .csv — anche rapporti già compilati nello standard Röchling (con intestazione a 2 righe: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). Il sistema rileva automaticamente le colonne e i dati di intestazione (fornitore, part number, ecc). Controlla la mappatura sotto prima di importare.',
+    drop_title:'Trascina qui il tuo file Excel o clicca per selezionare',drop_sub:'.xls, .xlsx, .csv',
+    btn_import_json:'📥 Importa JSON',
+    settings_prefs:'Preferenze',settings_backup:'Backup completo',
+    lbl_inspector:'Nome predefinito ispettore',lbl_role:'Ruolo predefinito',
+    lbl_dept:'Reparto predefinito',lbl_supplier_def:'Fornitore predefinito',lbl_obs_def:'Osservazione predefinita',btn_save_prefs:'Salva preferenze',
+    cloud_title:'Cloud (Supabase) — accesso e sincronizzazione',cloud_desc:'Collega un progetto Supabase per accedere ai tuoi rapporti da qualsiasi dispositivo, con accesso tramite e-mail e password. È opzionale — senza di esso, tutto rimane salvato solo in questo browser.',
+    btn_connect:'💾 Connetti',btn_disconnect:'Disconnetti',btn_signout:'🚪 Esci dal account',btn_syncnow:'🔄 Sincronizza ora',
+    cloud_sql_summary:'Visualizza script SQL di configurazione (eseguire 1 volta nel SQL Editor di Supabase)',btn_copy_sql:'📋 Copia SQL',
+    backup_desc:'Esporta tutti i rapporti e le impostazioni in un unico file.',btn_download_backup:'⬇ Scarica backup',btn_restore_backup:'⬆ Ripristina backup',
+    danger_zone:'Zona pericolosa',danger_desc:'Rimuove tutti i rapporti salvati in questo browser.',btn_wipe_all:'🗑 Elimina tutto',
+    cloud_status_off:'Non connesso — inserisci URL e chiave del tuo progetto Supabase sopra.',cloud_status_err:'Configurazione salvata, ma si è verificato un errore di connessione. Controlla URL/chiave.',
+    cloud_status_on:'Connesso come',cloud_status_needlogin:'Connesso al progetto — accedi per sincronizzare.',
+    auth_sub_login:'Accedi per visualizzare i tuoi rapporti nel cloud.',auth_sub_signup:'Crea il tuo account per iniziare a sincronizzare.',
+    auth_login:'Accedi',auth_signup:'Crea account',auth_email:'E-mail',auth_pass:'Password',auth_forgot:'Ho dimenticato la password',
+    sim_measurements:'🎲 Simula misurazioni',lbl_total:'Totale:',lbl_notok_count:'NOT OK:',
+    rowmenu_sim:'🎲 Simula misurazioni',rowmenu_up:'⬆ Inserisci riga sopra',rowmenu_down:'⬇ Inserisci riga sotto',rowmenu_auto:'↺ Ricalcola OK/NOT OK automaticamente',rowmenu_del:'✕ Rimuovi riga',
+    tt_manual:'Impostato manualmente',tt_auto:'Calcolato automaticamente',
+  },
+  de:{
+    nav_dashboard:'Dashboard',nav_reports:'Berichte',nav_editor:'Editor',nav_import:'Excel importieren',nav_settings:'Einstellungen',
+    title_dashboard:'Dashboard',sub_dashboard:'Übersicht der Maßberichte',
+    title_reports:'Berichte',sub_reports:'Alle erstellten Berichte',
+    title_editor:'Berichteditor',sub_editor:'Röchling-Maßberichte erstellen und bearbeiten',
+    title_import:'Excel importieren',sub_import:'.xls/.xlsx-Dateien hochladen und in Berichte umwandeln',
+    title_settings:'Einstellungen',sub_settings:'Systemeinstellungen und Backup',
+    kpi_total:'Berichte insgesamt',kpi_parts:'Geprüfte Teile',kpi_customers:'Betreute Kunden',kpi_topclient:'Berichte pro Kunde',
+    chart_bar:'Freigabe pro Bericht',chart_pie:'Gesamtstatus',chart_line:'Konformitätstrend',chart_customer:'Berichte pro Kunde',
+    lang_label:'Systemsprache',btn_theme:'Design wechseln',btn_new_report:'+ Neuer Bericht',
+    recent_reports:'Letzte Berichte',
+    search_ph:'🔍 Suche nach Name, Teilenummer, Bericht-Nr., Kunde...',
+    filter_all_status:'Alle Status',filter_ok:'Nur freigegeben',filter_nok:'Mit Abweichungen',filter_all_clients:'Alle Kunden',
+    btn_new:'+ Neu',th_name:'Name',th_partnumber:'Teilenummer',th_customer:'Kunde',th_reportn:'Bericht-Nr.',th_date:'Datum',th_items:'Positionen',th_status:'Status',th_actions:'Aktionen',
+    btn_history:'🕒 Verlauf',btn_rename:'✎ Umbenennen',btn_save:'💾 Speichern',btn_duplicate:'⧉ Duplizieren',btn_delete:'🗑 Löschen',
+    btn_json:'⬇ JSON',btn_excel:'⬇ Excel',btn_print:'🖨 Drucken',
+    lbl_dimensional:'Maßlich',lbl_material:'Material',lbl_others:'Sonstiges',
+    lbl_supplier:'LIEFERANT',lbl_suppliernumber:'LIEFERANTENNUMMER',lbl_partnumber:'TEILENUMMER',lbl_revision:'ÄNDERUNGSSTAND',
+    lbl_inspdept:'PRÜFABTEILUNG',lbl_partname:'TEILENAME',lbl_reportn:'BERICHT-NR.',lbl_customer:'KUNDE',
+    btn_addrow_end:'+ Zeile hinzufügen (Ende)',btn_addrow_start:'+ Zeile hinzufügen (Anfang)',btn_autotol:'Standardtoleranz anwenden',
+    hint_dragfill:'💡 Nutzen Sie ⬆+ / ⬇+ in jeder Zeile, um in der Mitte der Tabelle einzufügen · 🎲 simuliert Werte innerhalb der Toleranz basierend auf NOMINAL',
+    btn_reset_headers:'↺ Standard-Spaltennamen wiederherstellen',hint_headers:'💡 Klicken Sie direkt auf den Titel einer Spalte oben, um sie umzubenennen',
+    gdt_summary:'🔣 GD&T-Symbole',gdt_hint:'Klicken Sie auf ein Tabellenfeld (z.B. NOMINAL) und dann auf das Symbol — es wird an der Cursorposition eingefügt.',
+    lbl_obs:'Bemerkungen',lbl_name:'NAME',lbl_title_field:'FUNKTION',lbl_date:'DATUM',
+    import_title:'Fertigen Bericht importieren (Excel)',
+    import_desc:'Akzeptiert .xls / .xlsx / .csv — auch bereits ausgefüllte Berichte im Röchling-Standard (mit 2-zeiliger Kopfzeile: ITEM/CHARACTERISTIC/NOMINAL/TOLERANCE/RESULTS/OK/NOT OK). Das System erkennt automatisch die Spalten und Kopfdaten (Lieferant, Teilenummer usw). Prüfen Sie die Zuordnung unten vor dem Import.',
+    drop_title:'Excel-Datei hier ablegen oder klicken zum Auswählen',drop_sub:'.xls, .xlsx, .csv',
+    btn_import_json:'📥 JSON importieren',
+    settings_prefs:'Einstellungen',settings_backup:'Vollständiges Backup',
+    lbl_inspector:'Standard-Prüfername',lbl_role:'Standardfunktion',
+    lbl_dept:'Standardabteilung',lbl_supplier_def:'Standardlieferant',lbl_obs_def:'Standardbemerkung',btn_save_prefs:'Einstellungen speichern',
+    cloud_title:'Cloud (Supabase) — Anmeldung und Synchronisierung',cloud_desc:'Verbinden Sie ein Supabase-Projekt, um von jedem Gerät aus auf Ihre Berichte zuzugreifen, mit Anmeldung per E-Mail und Passwort. Optional — ohne dies bleibt alles nur in diesem Browser gespeichert.',
+    btn_connect:'💾 Verbinden',btn_disconnect:'Trennen',btn_signout:'🚪 Abmelden',btn_syncnow:'🔄 Jetzt synchronisieren',
+    cloud_sql_summary:'SQL-Einrichtungsskript anzeigen (einmal im Supabase-SQL-Editor ausführen)',btn_copy_sql:'📋 SQL kopieren',
+    backup_desc:'Exportiert alle Berichte und Einstellungen in eine einzige Datei.',btn_download_backup:'⬇ Backup herunterladen',btn_restore_backup:'⬆ Backup wiederherstellen',
+    danger_zone:'Gefahrenzone',danger_desc:'Entfernt alle in diesem Browser gespeicherten Berichte.',btn_wipe_all:'🗑 Alles löschen',
+    cloud_status_off:'Nicht verbunden — geben Sie oben die URL und den Schlüssel Ihres Supabase-Projekts ein.',cloud_status_err:'Einstellungen gespeichert, aber Verbindung fehlgeschlagen. Prüfen Sie URL/Schlüssel.',
+    cloud_status_on:'Angemeldet als',cloud_status_needlogin:'Mit dem Projekt verbunden — melden Sie sich an, um zu synchronisieren.',
+    auth_sub_login:'Melden Sie sich an, um auf Ihre Berichte in der Cloud zuzugreifen.',auth_sub_signup:'Erstellen Sie Ihr Konto, um mit der Synchronisierung zu beginnen.',
+    auth_login:'Anmelden',auth_signup:'Konto erstellen',auth_email:'E-Mail',auth_pass:'Passwort',auth_forgot:'Passwort vergessen',
+    sim_measurements:'🎲 Messungen simulieren',lbl_total:'Gesamt:',lbl_notok_count:'NICHT OK:',
+    rowmenu_sim:'🎲 Messungen simulieren',rowmenu_up:'⬆ Zeile oberhalb einfügen',rowmenu_down:'⬇ Zeile unterhalb einfügen',rowmenu_auto:'↺ OK/NICHT OK automatisch neu berechnen',rowmenu_del:'✕ Zeile entfernen',
+    tt_manual:'Manuell festgelegt',tt_auto:'Automatisch berechnet',
+  }
+};
+const LS_LANG='rochling_lang';
+let currentLang=localStorage.getItem(LS_LANG)||'pt';
+function t(key){return(I18N[currentLang]&&I18N[currentLang][key])||I18N.pt[key]||key}
+const titles={dashboard:['title_dashboard','sub_dashboard'],reports:['title_reports','sub_reports'],editor:['title_editor','sub_editor'],import:['title_import','sub_import'],settings:['title_settings','sub_settings']};
+function applyLanguage(lang){
+  currentLang=lang;localStorage.setItem(LS_LANG,lang);
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh)});
+  const sel=document.getElementById('langSelect');if(sel)sel.value=lang;
+  // Re-localize column headers that are still at factory defaults (any language) — leaves customized headers untouched
+  const allDefaultSets=Object.values(DEFAULT_HEADERS_BY_LANG).map(h=>JSON.stringify(h));
+  Object.values(state.reports).forEach(r=>{
+    if(r.headers&&allDefaultSets.includes(JSON.stringify(r.headers)))r.headers=defaultHeaders();
+  });
+  persist();
+  const curView=document.querySelector('.navbtn.active');
+  if(curView)go(curView.dataset.view);
+  renderDashboard();
+  renderGdtPalette();
+  if(document.getElementById('v-reports').classList.contains('active'))renderReports();
+  if(document.getElementById('v-editor').classList.contains('active'))renderEditor();
+}
 function go(v){
   document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
   document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id==='v-'+v));
-  document.getElementById('viewTitle').textContent=titles[v][0];
-  document.getElementById('viewSub').textContent=titles[v][1];
+  document.getElementById('viewTitle').textContent=t(titles[v][0]);
+  document.getElementById('viewSub').textContent=t(titles[v][1]);
   if(v==='dashboard'){renderDashboard()}
   if(v==='reports'){renderReports()}
   if(v==='editor'){renderEditor()}
@@ -815,15 +1071,15 @@ function renderRows(){
       <td><input value="${esc(row.low)}" data-f="low"><span class="fillhandle" data-f="low"></span></td>
       <td><input value="${esc(row.upper)}" data-f="upper"><span class="fillhandle" data-f="upper"></span></td>
       ${[0,1,2,3,4].map(i=>`<td><input value="${esc(row.m[i])}" data-f="m${i}"><span class="fillhandle" data-f="m${i}"></span></td>`).join('')}
-      <td><input value="${esc(row.ok)}" data-f="ok" style="color:var(--ok);font-weight:700" title="${row._manualStatus?'Definido manualmente':'Calculado automaticamente'}"><span class="fillhandle" data-f="ok"></span></td>
-      <td><input value="${esc(row.nok)}" data-f="nok" style="color:var(--nok);font-weight:700" title="${row._manualStatus?'Definido manualmente':'Calculado automaticamente'}"><span class="fillhandle" data-f="nok"></span></td>
+      <td><input value="${esc(row.ok)}" data-f="ok" style="color:var(--ok);font-weight:700" title="${row._manualStatus?t('tt_manual'):t('tt_auto')}"><span class="fillhandle" data-f="ok"></span></td>
+      <td><input value="${esc(row.nok)}" data-f="nok" style="color:var(--nok);font-weight:700" title="${row._manualStatus?t('tt_manual'):t('tt_auto')}"><span class="fillhandle" data-f="nok"></span></td>
       <td class="no-print"><select class="rowmenu" onchange="rowAction(${idx},this.value);this.value=''">
         <option value="">⋮</option>
-        <option value="sim">🎲 Simular medições</option>
-        <option value="up">⬆ Inserir linha acima</option>
-        <option value="down">⬇ Inserir linha abaixo</option>
-        ${row._manualStatus?'<option value="auto">↺ Recalcular OK/NOT OK automaticamente</option>':''}
-        <option value="del">✕ Remover linha</option>
+        <option value="sim">${t('rowmenu_sim')}</option>
+        <option value="up">${t('rowmenu_up')}</option>
+        <option value="down">${t('rowmenu_down')}</option>
+        ${row._manualStatus?`<option value="auto">${t('rowmenu_auto')}</option>`:''}
+        <option value="del">${t('rowmenu_del')}</option>
       </select></td>`;
     tr.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{
       const f=inp.dataset.f;
@@ -856,14 +1112,14 @@ function updateManualBadge(tr,row){
   const sel=tr.querySelector('.rowmenu');
   let autoOpt=sel&&sel.querySelector('option[value="auto"]');
   if(row._manualStatus&&!autoOpt&&sel){
-    autoOpt=document.createElement('option');autoOpt.value='auto';autoOpt.textContent='↺ Recalcular OK/NOT OK automaticamente';
+    autoOpt=document.createElement('option');autoOpt.value='auto';autoOpt.textContent=t('rowmenu_auto');
     const delOpt=sel.querySelector('option[value="del"]');
     sel.insertBefore(autoOpt,delOpt||null);
   }else if(!row._manualStatus&&autoOpt){
     autoOpt.remove();
   }
   const okInp=tr.querySelector('[data-f=ok]'),nokInp=tr.querySelector('[data-f=nok]');
-  const title=row._manualStatus?'Definido manualmente':'Calculado automaticamente';
+  const title=row._manualStatus?t('tt_manual'):t('tt_auto');
   if(okInp)okInp.title=title;if(nokInp)nokInp.title=title;
 }
 
@@ -1265,7 +1521,7 @@ function exportExcel(){
     [null,null,null,null,null,'LOW','UPPER','1','2','3','4','5'],
   ];
   {
-    const h=Object.assign({},DEFAULT_HEADERS,r.headers||{});
+    const h=Object.assign({},defaultHeaders(),r.headers||{});
     aoa[12]=[h.item,h.char,h.nominal,null,h.spec,h.tolerance,null,h.results,null,null,null,null,h.ok,h.nok];
     aoa[13]=[null,null,null,null,null,h.low,h.upper,h.m0,h.m1,h.m2,h.m3,h.m4];
   }
@@ -1292,7 +1548,7 @@ function renderReports(){
   const custSel=cf.value;
   const custs=[...new Set(Object.values(state.reports).map(r=>(r.customer||'').trim()).filter(Boolean))].sort();
   const prevSel=cf.value;
-  cf.innerHTML='<option value="">Todos os clientes</option>'+custs.map(c=>`<option value="${escape(c)}">${escape(c)}</option>`).join('');
+  cf.innerHTML='<option value="">'+t('filter_all_clients')+'</option>'+custs.map(c=>`<option value="${escape(c)}">${escape(c)}</option>`).join('');
   cf.value=custs.includes(prevSel)?prevSel:'';
   const tb=document.getElementById('reportsTbody');tb.innerHTML='';
   Object.entries(state.reports).forEach(([id,r])=>{
@@ -1342,17 +1598,21 @@ function renderDashboard(){
   let ok=0,nok=0,parts=0;
   reps.forEach(r=>{const s=statusOf(r);ok+=s.ok;nok+=s.nok;parts+=r.rows.length});
   document.getElementById('kpiTotal').textContent=reps.length;
-  document.getElementById('kpiOk').textContent=ok;
-  document.getElementById('kpiNok').textContent=nok;
   document.getElementById('kpiParts').textContent=parts;
-  const tot=ok+nok;
-  document.getElementById('kpiOkPct').textContent=tot?((ok/tot*100).toFixed(1)+'% do total'):'—';
-  document.getElementById('kpiNokPct').textContent=tot?((nok/tot*100).toFixed(1)+'% do total'):'—';
   const custCounts={};reps.forEach(r=>{const c=(r.customer||'').trim();if(c)custCounts[c]=(custCounts[c]||0)+1});
   const custNames=Object.keys(custCounts);
   document.getElementById('kpiCustomers').textContent=custNames.length;
-  let topCust='—';
-  if(custNames.length){const top=custNames.reduce((a,b)=>custCounts[a]>=custCounts[b]?a:b);topCust=top+' ('+custCounts[top]+')'}
+  let topCust='—';window._topClientName='';
+  if(custNames.length){
+    const top=custNames.reduce((a,b)=>custCounts[a]>=custCounts[b]?a:b);
+    topCust=top+' ('+custCounts[top]+')';
+    window._topClientName=top;
+    document.getElementById('kpiTopClient').textContent=custCounts[top];
+    document.getElementById('kpiTopClientSub').textContent=top;
+  }else{
+    document.getElementById('kpiTopClient').textContent='0';
+    document.getElementById('kpiTopClientSub').textContent='Nenhum cliente definido';
+  }
   document.getElementById('kpiCustomersSub').textContent=custNames.length?'Principal: '+topCust:'Nenhum cliente definido';
   const rec=document.getElementById('recentList');rec.innerHTML='';
   reps.slice().sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')).slice(0,6).forEach(r=>{
@@ -1367,6 +1627,14 @@ function kpiGo(statusVal){
   go('reports');
   document.getElementById('statusFilter').value=statusVal;
   document.getElementById('searchInp').value='';
+  renderReports();
+}
+function goTopClient(){
+  go('reports');
+  renderReports(); // populates the customer filter options first
+  document.getElementById('statusFilter').value='';
+  document.getElementById('searchInp').value='';
+  document.getElementById('customerFilter').value=window._topClientName||'';
   renderReports();
 }
 function renderCharts(){
@@ -1630,6 +1898,7 @@ document.getElementById('setObs').value=settings.obs;
 renderDashboard();
 initCloud();
 renderGdtPalette();
+applyLanguage(currentLang);
 </script>
 </body>
 </html>
