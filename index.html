@@ -204,7 +204,8 @@ table.dim.resizing{cursor:col-resize;user-select:none}
       <div class="txt">RÖCHLING<small>DIMENSIONAL SUITE</small></div>
     </div>
     <button class="navbtn active" data-view="dashboard"><span class="ic">📊</span><span data-i18n="nav_dashboard">Dashboard</span></button>
-    <button class="navbtn" data-view="reports"><span class="ic">📋</span><span data-i18n="nav_reports">Relatórios</span></button>
+    <button class="navbtn" data-view="reports" id="navReports" style="display:none"><span class="ic">📋</span><span data-i18n="nav_reports">Relatórios</span></button>
+    <button class="navbtn" data-view="approved-reports"><span class="ic">📑</span><span data-i18n="nav_approved_reports">Relatórios Aprovados</span></button>
     <button class="navbtn" data-view="editor"><span class="ic">✏️</span><span data-i18n="nav_editor">Editor</span></button>
     <button class="navbtn" data-view="import"><span class="ic">📥</span><span data-i18n="nav_import">Importar Excel</span></button>
     <button class="navbtn" data-view="settings"><span class="ic">⚙️</span><span data-i18n="nav_settings">Configurações</span></button>
@@ -232,6 +233,15 @@ table.dim.resizing{cursor:col-resize;user-select:none}
     <div class="content">
       <!-- DASHBOARD -->
       <section class="view active" id="v-dashboard">
+        <div class="card" style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <strong data-i18n="dash_filter_label">🔎 Filtro:</strong>
+          <select id="dashStatusFilter" style="min-width:220px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink)">
+            <option value="approved" data-i18n="dash_filter_approved">Somente Aprovados</option>
+            <option value="rejected" data-i18n="dash_filter_rejected">Somente Reprovados</option>
+            <option value="all" data-i18n="dash_filter_all">Todos os Relatórios</option>
+          </select>
+          <input type="text" id="dashSecretInp" placeholder="🔍" style="flex:1;min-width:180px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink)">
+        </div>
         <div class="grid kpis">
           <div class="card kpi clickable" onclick="kpiGo('')" title="Ver todos os relatórios"><div class="ic">📋</div><h3 data-i18n="kpi_total">Total de relatórios</h3><div class="v" id="kpiTotal">0</div><div class="sub" id="kpiTotalSub">Todos períodos</div></div>
           <div class="card kpi warn clickable" onclick="kpiGo('')" title="Ver todos os relatórios"><div class="ic">🎯</div><h3 data-i18n="kpi_parts">Peças inspecionadas</h3><div class="v" id="kpiParts">0</div><div class="sub">Últimos relatórios</div></div>
@@ -271,6 +281,10 @@ table.dim.resizing{cursor:col-resize;user-select:none}
 
       <!-- REPORTS -->
       <section class="view" id="v-reports">
+        <div class="card" style="margin-bottom:12px;background:linear-gradient(90deg,#fff3cd,#fde68a);border:1px solid #f59e0b;color:#78350f;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span><strong>🔒 <span data-i18n="admin_mode_title">Modo Administrador</span></strong> — <span data-i18n="admin_mode_sub">Relatórios Originais</span></span>
+          <button class="btn sm ghost" onclick="go('approved-reports')" data-i18n="admin_mode_exit">↩ Sair do modo admin</button>
+        </div>
         <div class="card">
           <div class="filters">
             <input type="text" id="searchInp" data-i18n-ph="search_ph" placeholder="🔍 Buscar por nome, part number, report N°, customer...">
@@ -286,6 +300,22 @@ table.dim.resizing{cursor:col-resize;user-select:none}
         </div>
       </section>
 
+      <!-- APPROVED REPORTS -->
+      <section class="view" id="v-approved-reports">
+        <div class="card">
+          <div class="filters">
+            <input type="text" id="searchInpApproved" data-i18n-ph="search_ph" placeholder="🔍 Buscar por nome, part number, report N°, customer...">
+            <select id="customerFilterApproved"><option value="" data-i18n="filter_all_clients">Todos os clientes</option></select>
+            <div class="spacer"></div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th data-i18n="th_name">Nome</th><th data-i18n="th_partnumber">Part Number</th><th data-i18n="th_customer">Customer</th><th data-i18n="th_reportn">Report N°</th><th data-i18n="th_date">Data</th><th data-i18n="th_items">Itens</th><th data-i18n="th_status">Status</th><th data-i18n="th_actions">Ações</th></tr></thead>
+            <tbody id="approvedReportsTbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+
       <!-- EDITOR -->
       <section class="view" id="v-editor">
         <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap" class="no-print">
@@ -295,6 +325,7 @@ table.dim.resizing{cursor:col-resize;user-select:none}
           <button class="btn sm" onclick="renameReport()" data-i18n="btn_rename">✎ Renomear</button>
           <button class="btn sm ok" onclick="saveReport()" data-i18n="btn_save">💾 Salvar</button>
           <button class="btn sm ghost" onclick="duplicateReport()" data-i18n="btn_duplicate">⧉ Duplicar</button>
+          <button class="btn sm ok" onclick="copyAsApproved()" data-i18n="btn_copy_approved">📄 Copiar como Aprovado</button>
           <button class="btn sm danger" onclick="deleteReport()" data-i18n="btn_delete">🗑 Excluir</button>
           <div class="spacer"></div>
           <button class="btn sm ghost" onclick="exportJSON()" data-i18n="btn_json">⬇ JSON</button>
@@ -819,7 +850,8 @@ function toast(msg,kind=''){const t=document.getElementById('toast');t.textConte
 document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
 const I18N={
   pt:{
-    nav_dashboard:'Dashboard',nav_reports:'Relatórios',nav_editor:'Editor',nav_import:'Importar Excel',nav_settings:'Configurações',
+    nav_dashboard:'Dashboard',nav_reports:'Relatórios',nav_approved_reports:'Relatórios Aprovados',nav_editor:'Editor',nav_import:'Importar Excel',nav_settings:'Configurações',dash_filter_label:'🔎 Filtro:',dash_filter_approved:'Somente Aprovados',dash_filter_rejected:'Somente Reprovados',dash_filter_all:'Todos os Relatórios',admin_mode_title:'Modo Administrador',admin_mode_sub:'Relatórios Originais',admin_mode_exit:'↩ Sair do modo admin',
+    title_approved_reports:'Relatórios Aprovados',sub_approved_reports:'Cópias aprovadas para clientes e auditorias',btn_copy_approved:'📄 Copiar como Aprovado',toast_approved_created:'Cópia aprovada criada com sucesso!',
     title_dashboard:'Dashboard',sub_dashboard:'Visão geral dos relatórios dimensionais',
     title_reports:'Relatórios',sub_reports:'Todos os relatórios gerados',
     title_editor:'Editor de relatório',sub_editor:'Crie e edite relatórios dimensionais Röchling',
@@ -864,7 +896,8 @@ const I18N={
     tt_manual:'Definido manualmente',tt_auto:'Calculado automaticamente',
   },
   en:{
-    nav_dashboard:'Dashboard',nav_reports:'Reports',nav_editor:'Editor',nav_import:'Import Excel',nav_settings:'Settings',
+    nav_dashboard:'Dashboard',nav_reports:'Reports',nav_approved_reports:'Approved Reports',nav_editor:'Editor',nav_import:'Import Excel',nav_settings:'Settings',dash_filter_label:'🔎 Filter:',dash_filter_approved:'Approved only',dash_filter_rejected:'Rejected only',dash_filter_all:'All reports',admin_mode_title:'Administrator Mode',admin_mode_sub:'Original Reports',admin_mode_exit:'↩ Exit admin mode',
+    title_approved_reports:'Approved Reports',sub_approved_reports:'Approved copies for customers and audits',btn_copy_approved:'📄 Copy as Approved',toast_approved_created:'Approved copy created successfully!',
     title_dashboard:'Dashboard',sub_dashboard:'Overview of dimensional reports',
     title_reports:'Reports',sub_reports:'All generated reports',
     title_editor:'Report editor',sub_editor:'Create and edit Röchling dimensional reports',
@@ -909,7 +942,8 @@ const I18N={
     tt_manual:'Set manually',tt_auto:'Calculated automatically',
   },
   es:{
-    nav_dashboard:'Panel',nav_reports:'Informes',nav_editor:'Editor',nav_import:'Importar Excel',nav_settings:'Configuración',
+    nav_dashboard:'Panel',nav_reports:'Informes',nav_approved_reports:'Informes Aprobados',nav_editor:'Editor',nav_import:'Importar Excel',nav_settings:'Configuración',dash_filter_label:'🔎 Filtro:',dash_filter_approved:'Solo Aprobados',dash_filter_rejected:'Solo Rechazados',dash_filter_all:'Todos los informes',admin_mode_title:'Modo Administrador',admin_mode_sub:'Informes Originales',admin_mode_exit:'↩ Salir del modo admin',
+    title_approved_reports:'Informes Aprobados',sub_approved_reports:'Copias aprobadas para clientes y auditorías',btn_copy_approved:'📄 Copiar como Aprobado',toast_approved_created:'¡Copia aprobada creada con éxito!',
     title_dashboard:'Panel',sub_dashboard:'Resumen de los informes dimensionales',
     title_reports:'Informes',sub_reports:'Todos los informes generados',
     title_editor:'Editor de informe',sub_editor:'Cree y edite informes dimensionales Röchling',
@@ -954,7 +988,8 @@ const I18N={
     tt_manual:'Definido manualmente',tt_auto:'Calculado automáticamente',
   },
   it:{
-    nav_dashboard:'Dashboard',nav_reports:'Rapporti',nav_editor:'Editor',nav_import:'Importa Excel',nav_settings:'Impostazioni',
+    nav_dashboard:'Dashboard',nav_reports:'Rapporti',nav_approved_reports:'Rapporti Approvati',nav_editor:'Editor',nav_import:'Importa Excel',nav_settings:'Impostazioni',dash_filter_label:'🔎 Filtro:',dash_filter_approved:'Solo Approvati',dash_filter_rejected:'Solo Respinti',dash_filter_all:'Tutti i rapporti',admin_mode_title:'Modalità Amministratore',admin_mode_sub:'Rapporti Originali',admin_mode_exit:'↩ Esci dalla modalità admin',
+    title_approved_reports:'Rapporti Approvati',sub_approved_reports:'Copie approvate per clienti e audit',btn_copy_approved:'📄 Copia come Approvato',toast_approved_created:'Copia approvata creata con successo!',
     title_dashboard:'Dashboard',sub_dashboard:'Panoramica dei rapporti dimensionali',
     title_reports:'Rapporti',sub_reports:'Tutti i rapporti generati',
     title_editor:'Editor rapporto',sub_editor:'Crea e modifica rapporti dimensionali Röchling',
@@ -999,7 +1034,8 @@ const I18N={
     tt_manual:'Impostato manualmente',tt_auto:'Calcolato automaticamente',
   },
   de:{
-    nav_dashboard:'Dashboard',nav_reports:'Berichte',nav_editor:'Editor',nav_import:'Excel importieren',nav_settings:'Einstellungen',
+    nav_dashboard:'Dashboard',nav_reports:'Berichte',nav_approved_reports:'Freigegebene Berichte',nav_editor:'Editor',nav_import:'Excel importieren',nav_settings:'Einstellungen',dash_filter_label:'🔎 Filter:',dash_filter_approved:'Nur Freigegebene',dash_filter_rejected:'Nur Abgelehnte',dash_filter_all:'Alle Berichte',admin_mode_title:'Administrator-Modus',admin_mode_sub:'Originalberichte',admin_mode_exit:'↩ Admin-Modus verlassen',
+    title_approved_reports:'Freigegebene Berichte',sub_approved_reports:'Freigegebene Kopien für Kunden und Audits',btn_copy_approved:'📄 Als Freigegeben kopieren',toast_approved_created:'Freigegebene Kopie erfolgreich erstellt!',
     title_dashboard:'Dashboard',sub_dashboard:'Übersicht der Maßberichte',
     title_reports:'Berichte',sub_reports:'Alle erstellten Berichte',
     title_editor:'Berichteditor',sub_editor:'Röchling-Maßberichte erstellen und bearbeiten',
@@ -1047,7 +1083,7 @@ const I18N={
 const LS_LANG='rochling_lang';
 let currentLang=localStorage.getItem(LS_LANG)||'pt';
 function t(key){return(I18N[currentLang]&&I18N[currentLang][key])||I18N.pt[key]||key}
-const titles={dashboard:['title_dashboard','sub_dashboard'],reports:['title_reports','sub_reports'],editor:['title_editor','sub_editor'],import:['title_import','sub_import'],settings:['title_settings','sub_settings']};
+const titles={dashboard:['title_dashboard','sub_dashboard'],reports:['title_reports','sub_reports'],'approved-reports':['title_approved_reports','sub_approved_reports'],editor:['title_editor','sub_editor'],import:['title_import','sub_import'],settings:['title_settings','sub_settings']};
 function applyLanguage(lang){
   currentLang=lang;localStorage.setItem(LS_LANG,lang);
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
@@ -1075,6 +1111,7 @@ function go(v){
   document.getElementById('viewSub').textContent=t(titles[v][1]);
   if(v==='dashboard'){renderDashboard()}
   if(v==='reports'){renderReports()}
+  if(v==='approved-reports'){renderApprovedReports()}
   if(v==='editor'){renderEditor()}
 }
 function isBlankReport(r){if(!r)return true;const meta=(r.partNumber||'')+(r.reportN||'')+(r.customer||'')+(r.partName||'')+(r.supplierNumber||'');if(meta.trim())return false;return (r.rows||[]).every(x=>!x.char&&!x.nominal&&!x.spec&&!x.low&&!x.upper&&(!x.m||x.m.every(v=>!v))&&!x.ok&&!x.nok)}
@@ -1733,6 +1770,7 @@ function renderReports(){
   cf.value=custs.includes(prevSel)?prevSel:'';
   const tb=document.getElementById('reportsTbody');tb.innerHTML='';
   Object.entries(state.reports).forEach(([id,r])=>{
+    if(r.approved)return;
     const stat=statusOf(r);
     if(st==='ok'&&stat.nok>0)return;if(st==='nok'&&stat.nok===0)return;
     if(cf.value&&(r.customer||'').trim()!==cf.value)return;
@@ -1773,9 +1811,67 @@ const delById=id=>{
   },'🗑 Excluir');
 };
 
+/* ---- Approved copies tab ---- */
+function copyAsApproved(){
+  collect();
+  const src=state.reports[state.current];if(!src)return;
+  const r=JSON.parse(JSON.stringify(src));
+  r.approved=true;
+  r.name=(r.name||'Relatório')+' [Cópia Aprovada]';
+  r.createdAt=new Date().toISOString();
+  (r.rows||[]).forEach(x=>{x.ok='OK';x.nok='';x._align=x._align});
+  r._manualStatus=true;
+  const nid=uid();state.reports[nid]=r;persist();
+  renderApprovedReports();
+  toast(t('toast_approved_created')||'Cópia aprovada criada com sucesso!','ok');
+}
+function renderApprovedReports(){
+  const q=(document.getElementById('searchInpApproved').value||'').toLowerCase();
+  const cf=document.getElementById('customerFilterApproved');
+  const approved=Object.entries(state.reports).filter(([,r])=>r.approved);
+  const custs=[...new Set(approved.map(([,r])=>(r.customer||'').trim()).filter(Boolean))].sort();
+  const prevSel=cf.value;
+  cf.innerHTML='<option value="">'+t('filter_all_clients')+'</option>'+custs.map(c=>`<option value="${escape(c)}">${escape(c)}</option>`).join('');
+  cf.value=custs.includes(prevSel)?prevSel:'';
+  const tb=document.getElementById('approvedReportsTbody');tb.innerHTML='';
+  approved.forEach(([id,r])=>{
+    if(cf.value&&(r.customer||'').trim()!==cf.value)return;
+    const hay=(r.name+' '+(r.partNumber||'')+' '+(r.reportN||'')+' '+(r.customer||'')).toLowerCase();
+    if(q&&!hay.includes(q))return;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><strong>${escape(r.name)}</strong></td>
+      <td>${escape(r.partNumber)||'—'}</td>
+      <td>${escape(r.customer)||'—'}</td>
+      <td>${escape(r.reportN)||'—'}</td>
+      <td>${(r.createdAt||'').slice(0,10)||'—'}</td>
+      <td>${(r.rows||[]).length}</td>
+      <td><span class="tag ok">OK / APROVADO</span></td>
+      <td>
+        <button class="btn sm" onclick="viewApproved('${id}')" title="Visualizar / Imprimir">👁️</button>
+        <button class="btn sm ghost" onclick="openReport('${id}')" title="Editar">✏️</button>
+        <button class="btn sm danger" onclick="delById('${id}')" title="Excluir">🗑️</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+  if(!tb.children.length)tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px">Nenhuma cópia aprovada</td></tr>';
+}
+const viewApproved=id=>{state.current=id;persist();go('editor');setTimeout(()=>window.print(),400)};
+document.getElementById('searchInpApproved').addEventListener('input',renderApprovedReports);
+document.getElementById('customerFilterApproved').addEventListener('change',renderApprovedReports);
+
 /* Dashboard */
+function dashFilterMode(){const s=document.getElementById('dashStatusFilter');return s?s.value:'approved'}
+function filteredReports(){
+  const mode=dashFilterMode();
+  return Object.values(state.reports).filter(r=>{
+    const s=statusOf(r);
+    if(mode==='approved')return s.nok===0;
+    if(mode==='rejected')return s.nok>0;
+    return true;
+  });
+}
 function renderDashboard(){
-  const reps=Object.values(state.reports);
+  const reps=filteredReports();
   let ok=0,nok=0,parts=0;
   reps.forEach(r=>{const s=statusOf(r);ok+=s.ok;nok+=s.nok;parts+=r.rows.length});
   document.getElementById('kpiTotal').textContent=reps.length;
@@ -1823,8 +1919,11 @@ function renderCharts(){
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
   const txt=isDark?'#e8eefc':'#0b1220',grid=isDark?'#26324d':'#e2e8f0';
   Chart.defaults.color=txt;Chart.defaults.borderColor=grid;
-  const repIds=Object.keys(state.reports);
-  const reps=Object.values(state.reports);
+  const filtered=filteredReports();
+  const filteredSet=new Set(filtered);
+  const allEntries=Object.entries(state.reports).filter(([,r])=>filteredSet.has(r));
+  const repIds=allEntries.map(([id])=>id);
+  const reps=allEntries.map(([,r])=>r);
   const labels=reps.map(r=>r.name.slice(0,18));
   const okArr=reps.map(r=>statusOf(r).ok),nokArr=reps.map(r=>statusOf(r).nok);
   const openByIdx=(ids,idx)=>{if(ids[idx])openReport(ids[idx])};
@@ -2077,6 +2176,27 @@ document.getElementById('setDept').value=settings.dept;
 document.getElementById('setSupplier').value=settings.supplier;
 document.getElementById('setObs').value=settings.obs;
 renderDashboard();
+
+/* ---- Secret access to hidden Reports tab ---- */
+function unlockAdminReports(){
+  const nav=document.getElementById('navReports');
+  if(nav)nav.style.display='';
+  go('reports');
+  toast('🔒 Modo Administrador ativado','ok');
+}
+function isSecretCode(v){const s=(v||'').trim().toLowerCase();return s==='#adminreal'||s==='*999*'}
+document.addEventListener('keydown',e=>{
+  const key=(e.key||'').toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&key==='r'){e.preventDefault();unlockAdminReports()}
+});
+['dashSecretInp','searchInpApproved','searchInp'].forEach(id=>{
+  const el=document.getElementById(id);if(!el)return;
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'&&isSecretCode(el.value)){e.preventDefault();el.value='';unlockAdminReports()}});
+});
+
+/* ---- Dashboard status filter ---- */
+const _dashFilt=document.getElementById('dashStatusFilter');
+if(_dashFilt)_dashFilt.addEventListener('change',()=>{renderDashboard()});
 initCloud();
 renderGdtPalette();
 applyLanguage(currentLang);
